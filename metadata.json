@@ -1,0 +1,6 @@
+{
+  "name": "Sehari Fine Jewels",
+  "description": "Premium luxury jewellery e-commerce platform showcasing diamond and gold collections, customizable filters, and educational guides.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
