@@ -193,7 +193,72 @@ export default function App() {
   };
 
   // --- Dynamic Filtering Logic ---
+  const filteredProducts = useMemo(() => {// --- Dynamic Filtering Logic ---
   const filteredProducts = useMemo(() => {
+    return PRODUCTS.filter((product) => {
+      // Search Query Match (Handles both singular "bangle" and plural "bangles")
+      if (searchQuery.trim()) {
+        const query = searchQuery.toLowerCase().trim();
+        const singularQuery = query.endsWith('s') ? query.slice(0, -1) : query;
+        
+        const matchesName = product.name.toLowerCase().includes(query) || product.name.toLowerCase().includes(singularQuery);
+        const matchesDesc = product.description.toLowerCase().includes(query) || product.description.toLowerCase().includes(singularQuery);
+        const matchesCat = product.category.toLowerCase().includes(query) || product.category.toLowerCase().includes(singularQuery);
+        const matchesSubcat = product.subcategory.toLowerCase().includes(query) || product.subcategory.toLowerCase().includes(singularQuery);
+        
+        if (!matchesName && !matchesDesc && !matchesCat && !matchesSubcat) {
+          return false;
+        }
+      }
+
+      // Category Match (All vs Specific Category)
+      if (filters.category !== 'All') {
+        if (product.category !== filters.category) return false;
+      }
+
+      // Product Type (Subcategory) Match
+      if (filters.productType.length > 0) {
+        if (!filters.productType.includes(product.subcategory)) return false;
+      }
+
+      // Price Range Match
+      if (product.price < filters.priceRange[0] || product.price > filters.priceRange[1]) return false;
+
+      // Metal Match
+      if (filters.metal.length > 0) {
+        if (!filters.metal.includes(product.metal)) return false;       
+      }
+
+      // Stone Match
+      if (filters.stone.length > 0) {
+        if (!filters.stone.includes(product.stone)) return false;
+      }
+
+      // Gender Match
+      if (filters.gender.length > 0) {
+        if (!filters.gender.includes(product.gender)) return false;
+      }
+
+      // Occasion Match
+      if (filters.occasion.length > 0) {
+        if (!filters.occasion.includes(product.occasion)) return false;
+      }
+
+      // Collection Match
+      if (filters.collection.length > 0) {
+        if (!filters.collection.includes(product.collection)) return false;
+      }
+
+      // Availability Match (Ready vs Salon)
+      if (filters.availability === 'ready') {
+        if (!product.isBestSeller && !product.isNew) return false;
+      } else if (filters.availability === 'salon') {
+        if (product.isBestSeller || product.isNew) return false;
+      }
+
+      return true;
+    });
+  }, [searchQuery, filters]);
     return PRODUCTS.filter((product) => {
       // Search Query Match
       if (searchQuery.trim()) {
